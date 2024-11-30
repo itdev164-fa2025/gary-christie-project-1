@@ -1,35 +1,48 @@
 import * as React from "react"
 import { graphql, Link } from "gatsby"
 import { GatsbyImage } from "gatsby-plugin-image"
-
-
+import styled from "styled-components"
+import { Box, Card, Heading} from "rebass"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
-import { List, ListItem } from "../components/List"
 import * as styles from "../components/index.module.css"
 
 
+const Grid = styled(Box)`
+  display: grid;
+  margin: 0;
+  --w: 280px;
+  --n: 2;
+  gap: var(--size-gap);
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(max(var(--w), 100%/ (var(--n) + 1) + 0.1%), 1fr)
+  );
+  margin-bottom: var(--size-gap);
+  margin-top: var(--size-gap);
+`
+
 const IndexPage = ({data}) => (
   <Layout>
-    <Seo title="Home" />
-    <List width={[1, 2/3, 7/8 ]} p={2}>
-      {
-        data.allContentfulBlogPost.edges.map(edge => (
-          <ListItem p={3} key={edge.node.id}>
-            <Link to={edge.node.slug}>{edge.node.title}</Link>
-            <div>
-              <GatsbyImage
-                image={edge.node.heroImage.gatsbyImageData}
-              />
-            </div>
-            <div>
-              {edge.node.body.childMarkdownRemark.excerpt}
-            </div>
-          </ListItem>
-        ))
-
-      }
-    </List>
+    <Grid>
+    {
+      data.allContentfulBlogPost.edges.map(edge => (
+        <Card key={edge.node.id}>
+          <Link to={edge.node.slug}>
+            <GatsbyImage 
+              image={edge.node.heroImage.gatsbyImageData}
+            />
+          </Link>
+          <Heading>
+            {edge.node.title}
+          </Heading>
+          <div>
+            {edge.node.body.childMarkdownRemark.excerpt}
+          </div>
+        </Card>
+      ))
+    }  
+    </Grid>
   </Layout>
 )
 
